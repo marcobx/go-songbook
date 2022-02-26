@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Canzoniere del GAN</title>
+</head>
+
+<body>
+  <h1>Canzoniere del GAN</h1>
+  <!-- 
+    This section of the document specifies the table that will
+    be used to display the list of songs and their title
+   -->
+  <table>
+    <tr>
+      <th>Num.</th>
+      <th>Titolo</th>
+    </tr>
+    <td>001</td>
+    <td>Alfa</td>
+    </tr>
+  </table>
+  <br/>
+
+  <!-- 
+    This section contains the form, that will be used to hit the 
+    `POST /song` API that we will build in the next section
+   -->
+  <form action="/song" method="post">
+    Numero:
+    <input type="text" name="id">
+    <br/> Titolo:
+    <input type="text" name="title">
+    <br/>
+    <input type="submit" value="Submit">
+  </form>
+
+  <!-- 
+    Finally, the last section is the script that will
+    run on each page load to fetch the list of songs
+    and add them to our existing table
+   -->
+  <script>
+    songTable = document.querySelector("table")
+
+    /*
+    Use the browsers `fetch` API to make a GET call to /song
+    We expect the response to be a JSON list of songs, of the
+    form :
+    [
+      {"id":"...","title":"..."},
+      {"id":"...","title":"..."}
+    ]
+    */
+    fetch("/song")
+      .then(response => response.json())
+      .then(songList => {
+        //Once we fetch the list, we iterate over it
+        songList.forEach(song => {
+          // Create the table row
+          row = document.createElement("tr")
+
+          // Create the table data elements for the id and title columns
+          id = document.createElement("td")
+          id.innerHTML = song.num
+          title = document.createElement("td")
+          title.innerHTML = song.title
+
+          // Add the data elements to the row
+          row.appendChild(id)
+          row.appendChild(title)
+          // Finally, add the row element to the table itself
+          songTable.appendChild(row)
+        })
+      })
+  </script>
+</body>
+
+</html>
